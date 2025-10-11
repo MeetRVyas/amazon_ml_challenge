@@ -1,0 +1,51 @@
++-------------------------+
+          |      Input Data         |
+          | (Text, Image, sample_id)|
+          +-----------+-------------+
+                      |
+        +-------------+------------------+-----------------------+
+        |                                |                       |
++-------V-------+              +---------V---------+     +-------V-------+
+|  PREPROCESSING  |              |   PREPROCESSING   |     | PREPROCESSING |
+| (Text Cleaning) |              |  (Image Resizing) |     |  (Feature    |
+|                 |              |                   |     | Engineering)|
++-------+-------+              +---------+---------+     +-------+-------+
+        |                                |                       |
+        |                                |                       |
+        |      +-------------------------+                       |
+        |      |                                                 |
++-------V------V--------+                             +----------V----------+
+|                       |                             |                       |
+|   **BASE MODEL 1:**   |                             |   **BASE MODEL 2:**   |
+| **Cross-Modal ViT-LM**|                             | **Tabular Specialist**|
+| (Deep Learning)       |                             |   (LightGBM/XGBoost)  |
+|                       |                             |                       |
+| - ViT Image Encoder   |                             | - Takes only the      |
+| - MPNet Text Encoder  |                             |   engineered features |
+| - Cross-Attention     |                             |   (Brand, IPQ, etc.)  |
+| - Fused Regression    |                             |                       |
++-----------+-----------+                             +-----------+-----------+
+            |                                                       |
+            | (OOF Predictions for Training)                        | (OOF Predictions for Training)
+            | (Test Predictions)                                    | (Test Predictions)
+            |                                                       |
+            |             +----------------------------+            |
+            +------------>|      TRAINING DATA FOR     |<-----------+
+                          |      THE META-MODEL        |
+                          |  [Pred_Model_1, Pred_Model_2]|
+                          +-------------+--------------+
+                                        |
+                               +--------V--------+
+                               |                 |
+                               | **LEVEL 1:**    |
+                               | **META-MODEL**  |
+                               |   (Ridge/Lasso  |
+                               |   Regression)   |
+                               |                 |
+                               +--------+--------+
+                                        |
+                               +--------V--------+
+                               |                 |
+                               | FINAL PREDICTION|
+                               |                 |
+                               +-----------------+
