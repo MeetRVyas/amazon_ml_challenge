@@ -1,0 +1,43 @@
++-------------------------------------------------+
+|               INPUT DATA                        |
+|   (catalog_content, image_link, sample_id)      |
++-----------------------+-------------------------+
+                        |
+            +-----------+-----------+
+            |      PREPROCESSING    |
+            | - Text Cleaning & OCR |
+            | - Image Resizing      |
+            | - Feature Engineering |
+            +-----------+-----------+
+                        |
++-----------------------+------------------------------------------------------+
+|                       LEVEL 0: BASE MODELS (Trained via Cross-Validation)    |
+|                                                                              |
+| +---------------------+ +---------------------+ +---------------------+ +---------------------+ |
+| |      MODEL 1        | |      MODEL 2        | |      MODEL 3        | |      MODEL 4        | |
+| |  (Text Specialist)  | |  (Image Specialist) | | (OCR-Enhanced Text) | |  (CLIP Multi-Modal) | |
+| |---------------------| |---------------------| |---------------------| |---------------------| |
+| | - Text Features     | | - Image Input       | | - Fused Text Feats. | | - Image Input       | |
+| | - Sentence Embeds   | | - EfficientNetB4    | | - Sentence Embeds   | | - Text Input        | |
+| | - LightGBM          | |   (TF/Keras)        | | - LightGBM          | | - CLIP Embeddings   | |
+| |                     | | - Regression Head   | |                     | | - NN Head (TF/Keras)| |
+| +----------+----------+ +----------+----------+ +----------+----------+ +----------+----------+ |
+|            |                        |                        |                        |           |
+|            | (OOF Preds)            | (OOF Preds)            | (OOF Preds)            | (OOF Preds)|
+|            |                        |                        |                        |           |
+|            +------------------------+-----------+------------+------------------------+           |
+|                                     |                                                            |
++-------------------------------------+------------------------------------------------------------+
+                                      |
+                       +--------------V--------------+
+                       | LEVEL 1: META-MODEL         |
+                       |-----------------------------|
+                       | - Input: [Pred_M1, Pred_M2, |
+                       |           Pred_M3, Pred_M4] |
+                       | - Model: Ridge Regression   |
+                       |         (Scikit-learn)      |
+                       +--------------+--------------+
+                                      |
+                               +------V------+
+                               | FINAL PRICE |
+                               +-------------+

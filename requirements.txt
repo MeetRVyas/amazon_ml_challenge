@@ -13,3 +13,6 @@ scikit-learn
 lightgbm
 matplotlib
 tf-keras
+easyocr
+paddleocr
+paddlepaddle
