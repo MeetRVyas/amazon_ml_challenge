@@ -15,4 +15,6 @@ matplotlib
 tf-keras
 easyocr
 paddleocr
-paddlepaddle
+paddle
+timm
+clip
